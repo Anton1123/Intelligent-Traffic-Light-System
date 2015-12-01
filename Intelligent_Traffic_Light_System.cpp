@@ -54,12 +54,11 @@ void *north(void *null)
 {
 
     int localID;
+    pthread_mutex_lock(&northLock); // locking the queue
     pthread_mutex_lock(&globalIDLock); // locking globalIDLock mutex in order to update globalID
     localID = globalID++; // update globalID after reserving that ID for a car in north lane
-    pthread_mutex_unlock(&globalIDLock);
-
-    pthread_mutex_lock(&northLock); // locking the queue
     northQ.push(localID); // pushing the local car into northQ.
+    pthread_mutex_unlock(&globalIDLock);
     pthread_mutex_unlock(&northLock);
 
     while(1) //Checking cars properties here
@@ -83,7 +82,7 @@ void *north(void *null)
     cout << "Car from NORTH lane with ID: " << localID << " LEAVING the intersection." << endl;
     pthread_mutex_unlock(&intersectionLock); // give other cars a chance to pass
 
-    pthread_mutex_unlock(&northLock); //Unlocking north Lane 
+    pthread_mutex_unlock(&northLock); //Unlocking north Lane
 
     pthread_mutex_lock(&northLock);//Locking north lane mutex before popping
     northQ.pop();
@@ -95,12 +94,11 @@ void *east(void *null)
 {
 
     int localID;
+    pthread_mutex_lock(&eastLock); // locking the queue
     pthread_mutex_lock(&globalIDLock); // locking globalIDLock mutex in order to update globalID
     localID = globalID++; // update globalID after reserving that ID for a car in north lane
-    pthread_mutex_unlock(&globalIDLock);
-
-    pthread_mutex_lock(&eastLock); // locking the queue
     eastQ.push(localID); // pushing the local car into northQ.
+    pthread_mutex_unlock(&globalIDLock);
     pthread_mutex_unlock(&eastLock);
 
     while(1) //Checking cars properties here
@@ -124,7 +122,7 @@ void *east(void *null)
     cout << "Car from EAST lane with ID:  " << localID << " LEAVING the intersection." << endl;
     pthread_mutex_unlock(&intersectionLock); // give other cars a chance to pass
 
-    pthread_mutex_unlock(&eastLock); //Unlocking east Lane 
+    pthread_mutex_unlock(&eastLock); //Unlocking east Lane
 
     pthread_mutex_lock(&eastLock);//Locking east lane mutex before popping
     eastQ.pop();
@@ -136,12 +134,11 @@ void *south(void *null)
 {
 
     int localID;
+    pthread_mutex_lock (&southLock); // locking the queue
     pthread_mutex_lock (&globalIDLock); // locking globalIDLock mutex in order to update globalID
     localID = globalID++; // update globalID after reserving that ID for a car in north lane
-    pthread_mutex_unlock (&globalIDLock);
-
-    pthread_mutex_lock (&southLock); // locking the queue
     southQ.push(localID); // pushing the local car into northQ.
+    pthread_mutex_unlock (&globalIDLock);
     pthread_mutex_unlock (&southLock);
 
     while(1) //Checking cars properties here
@@ -165,7 +162,7 @@ void *south(void *null)
     cout << "Car from SOUTH lane with ID: " << localID << " LEAVING the intersection." << endl;
     pthread_mutex_unlock(&intersectionLock); // give other cars a chance to pass
 
-    pthread_mutex_unlock(&southLock); //Unlocking south Lane 
+    pthread_mutex_unlock(&southLock); //Unlocking south Lane
 
     pthread_mutex_lock(&southLock);//Locking south lane mutex before popping
     southQ.pop();
@@ -177,12 +174,11 @@ void *west(void *null)
 {
 
     int localID;
+    pthread_mutex_lock (&westLock); // locking the queue
     pthread_mutex_lock (&globalIDLock); // locking globalIDLock mutex in order to update globalID
     localID = globalID++; // update globalID after reserving that ID for a car in north lane
-    pthread_mutex_unlock (&globalIDLock);
-
-    pthread_mutex_lock (&westLock); // locking the queue
     westQ.push(localID); // pushing the local car into northQ.
+    pthread_mutex_unlock (&globalIDLock);
     pthread_mutex_unlock (&westLock);
 
     while(1) //Checking cars properties here
@@ -206,7 +202,7 @@ void *west(void *null)
     cout << "Car from WEST lane with ID:  " << localID << " LEAVING the intersection." << endl;
     pthread_mutex_unlock(&intersectionLock); // give other cars a chance to pass
 
-    pthread_mutex_unlock(&westLock); //Unlocking west Lane 
+    pthread_mutex_unlock(&westLock); //Unlocking west Lane
 
     pthread_mutex_lock(&westLock);//Locking west lane mutex before popping
     westQ.pop();
@@ -220,10 +216,10 @@ int main()
 
     for(int i = 0; i < CARS; i++) //first car will be car with ID 1; Last ID is 40
     {
-        pthread_create (&threadID, NULL , north, NULL);
-        pthread_create (&threadID, NULL , east, NULL);
-        pthread_create (&threadID, NULL , south, NULL);
-        pthread_create (&threadID, NULL , west, NULL);
+        pthread_create (&threadID, NULL, north, NULL);
+        pthread_create (&threadID, NULL, east, NULL);
+        pthread_create (&threadID, NULL, south, NULL);
+        pthread_create (&threadID, NULL, west, NULL);
     }
     sleep(RUN_TIME); //sleep for sufficient times to allow for all threads to finish running.
 
