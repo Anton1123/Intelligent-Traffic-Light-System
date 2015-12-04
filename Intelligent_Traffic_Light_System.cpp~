@@ -5,7 +5,6 @@
 // Professor: Dr. Ming Li
 
 // Instructions
-// Change the CARS and RUN_TIME variable to the desired values.
 // Compile in command line using: g++ -pthread Intelligent_Traffic_Light_System.cpp -o run.exe
 // Run in command line by using: ./run.exe
 
@@ -74,7 +73,7 @@ void *north(void *null)
     pthread_mutex_unlock(&northLock);
 
     usleep(getrand(100000, 3000000)); //lets say it takes somewhere between 1/10th of a second and 3 seconds to get to the intersection.
-    start = clock(); // Now the car has arrived at intersection. Let's start the timer.
+    start = clock();
 
 
     while(1) //Checking cars properties here
@@ -90,17 +89,25 @@ void *north(void *null)
             usleep(10); // sleep for 10 microsecond to allow for other cars to proceed if they must
             continue;
         }
+
     }
 
     // Car is in the front so let's proceed to allow it to pass through intersection.
     pthread_mutex_lock(&intersectionLock); // need to lock the intersection. Function call will block until mutex is available
     duration = ( std::clock() - start ) / (double) CLOCKS_PER_SEC;
     northQ.pop();
+    //pthread_mutex_unlock(&northLock);
     cout << "Car from NORTH lane with ID: " << localID << " ENTERING the intersection." << endl;
     cout << "It has been waiting at the light for: "<< duration<<" seconds."<<endl;
     sleep(3);
     cout << "Car from NORTH lane with ID: " << localID << " LEAVING the intersection." << endl<<endl;
     pthread_mutex_unlock(&intersectionLock); // give other cars a chance to pass
+
+//    pthread_mutex_unlock(&northLock); //Unlocking north Lane
+//
+//    pthread_mutex_lock(&northLock);//Locking north lane mutex before popping
+//    northQ.pop();
+//    pthread_mutex_unlock(&northLock);
 }
 
 
@@ -134,6 +141,7 @@ void *east(void *null)
             usleep(10); // sleep for 10 microsecond to allow for other cars to proceed if they must
             continue;
         }
+
     }
 
     // Car is in the front so let's proceed to allow it to pass through intersection.
@@ -146,6 +154,12 @@ void *east(void *null)
     sleep(3);
     cout << "Car from EAST lane with ID:  " << localID << " LEAVING the intersection." << endl <<endl;
     pthread_mutex_unlock(&intersectionLock); // give other cars a chance to pass
+
+//    pthread_mutex_unlock(&eastLock); //Unlocking east Lane
+//
+//    pthread_mutex_lock(&eastLock);//Locking east lane mutex before popping
+//    eastQ.pop();
+//    pthread_mutex_unlock(&eastLock);
 }
 
 
@@ -192,6 +206,12 @@ void *south(void *null)
     sleep(3);
     cout << "Car from SOUTH lane with ID: " << localID << " LEAVING the intersection." << endl<<endl;
     pthread_mutex_unlock(&intersectionLock); // give other cars a chance to pass
+
+//    pthread_mutex_unlock(&southLock); //Unlocking south Lane
+//
+//    pthread_mutex_lock(&southLock);//Locking south lane mutex before popping
+//    southQ.pop();
+//    pthread_mutex_unlock(&southLock);
 }
 
 
@@ -211,7 +231,6 @@ void *west(void *null)
 
     usleep(getrand(100000, 3000000));
     start = clock();
-
 
     while(1) //Checking cars properties here
     {
@@ -239,6 +258,12 @@ void *west(void *null)
     sleep(3);
     cout << "Car from WEST lane with ID:  " << localID << " LEAVING the intersection." << endl<<endl;
     pthread_mutex_unlock(&intersectionLock); // give other cars a chance to pass
+
+//    pthread_mutex_unlock(&westLock); //Unlocking west Lane
+//
+//    pthread_mutex_lock(&westLock);//Locking west lane mutex before popping
+//    westQ.pop();
+//    pthread_mutex_unlock(&westLock);
 }
 
 
